@@ -1,37 +1,32 @@
-const request = require('request');
-
-async function getData(channelName, clientID, authkey) {
-	return new Promise((resolve, reject) => {
-		const headers = {
-			'client-id': clientID,
-			'Authorization': `Bearer ${authkey}`,
-		};
-		request.get(
-			`https://api.twitch.tv/helix/search/channels?query=${channelName}`, { headers:headers },
-			(error, res, body) => {
-				if (error) {
-					return console.error(error);
-				}
-				try {
-					const channelTempData = JSON.parse(body).data;
-					let doesExist = false;
-
-					for (let i = 0; i < channelTempData.length; i++) {
-						if ((channelTempData[i].broadcaster_login).toLowerCase() == channelName.toLowerCase()) {
-							doesExist = true;
-							resolve(JSON.parse(body).data[i]);
-						}
-					}
-
-					if (!doesExist) {
-						resolve(false);
-					}
-				}
-				catch (e) {
-					reject(e);
-				}
-			},
+async function getData(channelName, clientID, authKey) {
+	try {
+		const res = await fetch(
+			`https://api.twitch.tv/helix/search/channels?query=${channelName}`,
+			{
+				headers: {
+					'Client-ID': clientID,
+					'Authorization': `Bearer ${authKey}`,
+				},
+			}
 		);
-	});
+
+		if (!res.ok) {
+			console.error(`Twitch API returned ${res.status}: ${res.statusText} dookie`);
+			return false;
+		}
+
+		const data = await res.json();
+		const channels = data.data || [];
+
+		// Look for exact match (case-insensitive)
+		const channel = channels.find(
+			c => c.broadcaster_login.toLowerCase() === channelName.toLowerCase()
+		);
+
+		return channel || false;
+	} catch (err) {
+		console.error('Error fetching Twitch channel data:', err);
+		return false;
+	}
 }
 module.exports = { getData };

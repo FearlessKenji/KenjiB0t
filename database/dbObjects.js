@@ -9,7 +9,9 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 const Servers = require('./models/servers.js')(sequelize, Sequelize.DataTypes);
 const Channels = require('./models/channels.js')(sequelize, Sequelize.DataTypes);
+const Subs = require('./models/subs.js')(sequelize, Sequelize.DataTypes);
 
 Channels.belongsTo(Servers, { foreignKey: 'guildId', targetKey: 'guildId' });
+Subs.belongsTo(Servers, { foreignKey: 'guildId', targetKey: 'guildId' });
 
-module.exports = { Servers, Channels };
+module.exports = { Servers, Channels, Subs };

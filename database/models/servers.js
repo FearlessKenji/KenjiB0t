@@ -4,7 +4,6 @@
  * channelId VARCHAR(255) UNIQUE,
  * mainRoleId VARCHAR(255) UNIQUE,
  * otherRoleId VARCHAR(255) UNIQUE,
- * cron VARCHAR(255) NOT NULL
  * );
  */
 module.exports = (sequelize, DataTypes) => {

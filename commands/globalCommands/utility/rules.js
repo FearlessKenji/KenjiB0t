@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,6 +28,6 @@ module.exports = {
 			4. If you see something against the rules or something that makes you feel unsafe, let staff know. We want this server to be a welcoming space!`);
 
 		await channel.send({ embeds: [rules] });
-		await interaction.reply({ content: 'Rules posted.', ephemeral: true });
+		await interaction.reply({ content: 'Rules posted.', flags: MessageFlags.Ephemeral });
 	},
 };
