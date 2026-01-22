@@ -27,7 +27,7 @@ sequelize.sync({ force }).then(async () => {
 	];
 
 	const sub = [
-		Subreddits.upsert({ SubName: 'araragi', channelId: '1463359516283375843', guildId: guildId }),
+		Subreddits.upsert({ SubName: 'evangelionmemes', channelId: '1463359516283375843', guildId: guildId }),
 		Subreddits.upsert({ SubName: 'netorase', channelId: '1463359516283375843', guildId: guildId }),
 	];
 
