@@ -14,7 +14,11 @@ async function getTwitchDataBatch(channelNames, clientID, authKey) {
     const headers = { 'Client-Id': clientID, 'Authorization': `Bearer ${authKey}` };
     try {
       const res = await fetch(url, { headers });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`HTTP ${res.status} - ${text}`);
+      }
+
       const data = await res.json();
       return { name, data: data.data[0] ?? null }; // null if offline
     } catch (err) {
@@ -50,7 +54,10 @@ async function checkTwitch(client) {
 
     // Fetch all channels for this server
     const channels = await Channels.findAll({ where: { guildId: server.guildId }, raw: true });
-    const channelNames = channels.map(c => c.channelName).filter(Boolean);
+    const channelNames = channels
+      .map(c => c.channelName?.toLowerCase().trim())
+      .filter(name => name && /^[a-z0-9_]+$/.test(name));
+
 
     // Batch fetch Twitch data globally per channel name
     const streamsData = await getTwitchDataBatch(channelNames, config.twitchClientId, config.authToken);
