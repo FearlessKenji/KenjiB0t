@@ -11,7 +11,7 @@ const fs = require('node:fs');
 async function getTwitchDataBatch(channelNames, clientID, authKey) {
   const promises = channelNames.map(async (name) => {
     const url = `https://api.twitch.tv/helix/streams?user_login=${name}`;
-    const headers = { 'Client-Id': clientID, 'Authorization': `Bearer ${authKey}` };
+    const headers = { 'Client-ID': clientID, 'Authorization': `Bearer ${authKey}` };
     try {
       const res = await fetch(url, { headers });
       if (!res.ok) {
@@ -50,7 +50,7 @@ async function checkTwitch(client) {
 
   for (const server of servers) {
     const guild = client.guilds.cache.get(server.guildId);
-    console.log(writeLog(`Checking channels for ${guild?.name ?? 'Unknown guild'} (ID: ${server.guildId})`));
+    //console.log(writeLog(`Checking channels for ${guild?.name ?? 'Unknown guild'} (ID: ${server.guildId})`));
 
     // Fetch all channels for this server
     const channels = await Channels.findAll({ where: { guildId: server.guildId }, raw: true });
@@ -70,7 +70,7 @@ async function checkTwitch(client) {
       const discordChannelId = chan.isSelf ? server.selfChannelId : server.affiliateChannelId;
       const discordChannel = client.channels.cache.get(discordChannelId);
       if (!discordChannel) {
-        console.error(writeLog(`Discord channel ID ${discordChannelId} not found for guild ${server.guildId}`));
+        console.error(writeLog(`Twitch updates cannot be sent to ${discordChannelId} channel in server ${guild?.name} (ID: ${server.guildId}).`));
         return;
       }
 

@@ -45,7 +45,7 @@ async function checkReddit(client, throttle = 1000) {
 
   for (const server of servers) {
     const guild = client.guilds.cache.get(server.guildId);
-    console.log(writeLog(`Checking subreddits for ${guild?.name ?? 'Unknown guild'} (ID: ${server.guildId})`));
+    //console.log(writeLog(`Checking subreddits for ${guild?.name ?? 'Unknown guild'} (ID: ${server.guildId})`));
 
     const subs = await Subs.findAll({ where: { guildId: server.guildId }, raw: true });
 

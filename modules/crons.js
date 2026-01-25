@@ -19,7 +19,7 @@ module.exports = (client) => {
         }),
 
         Status: new CronJob(config.statusCron, () => {
-            console.log(writeLog(`Changing status...`));
+            //console.log(writeLog(`Changing status...`));
             let totalMembers = 0;
             client.guilds.cache.forEach(g => totalMembers += g.memberCount);
 
