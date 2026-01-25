@@ -1,13 +1,16 @@
 /*
- * equivalent to: CREATE TABLE channels(
- * id INTEGER PRIMARYKEY AUTOINCREMENT,
- * name VARCHAR(255),
+ * equivalent to: CREATE TABLE channels (
+ * id INTEGER PRIMARY KEY AUTOINCREMENT,
+ * channelName VARCHAR(255) NOT NULL,
  * discordUrl VARCHAR(255),
+ * isSelf BOOLEAN NOT NULL DEFAULT false,
  * streamId VARCHAR(255),
  * messageId VARCHAR(255) UNIQUE,
- * serverId VARCHAR(255) NOT NULL
+ * guildId VARCHAR(255) NOT NULL,
+ * UNIQUE (channelName, guildId)
  * );
  */
+
 module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('channels', {
 		id: {
@@ -15,20 +18,24 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		ChannelName: {
+		channelName: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: 'compositeIndex', // Ensure unique within the same guildId
 		},
-		DiscordServer: {
+		discordUrl: {
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
-		twitch_stream_id: {
+		isSelf: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			default: false
+		},
+		streamId: {
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
-		discord_message_id: {
+		messageId: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			unique: true, // Ensure globally unique
@@ -36,14 +43,13 @@ module.exports = (sequelize, DataTypes) => {
 		guildId: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: 'compositeIndex', // Ensure unique within the same guildId
 		},
 	}, {
 		timestamps: false,
 		indexes: [
 			{
 				unique: true,
-				fields: ['ChannelName', 'guildId'], // Composite unique index
+				fields: ['channelName', 'guildId'], // Composite unique index
 				name: 'compositeIndex',
 			},
 		],

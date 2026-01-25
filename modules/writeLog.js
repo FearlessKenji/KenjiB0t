@@ -1,38 +1,32 @@
-const logsFolder = './logs';
 const fs = require('node:fs');
+const path = require('node:path');
 const { dateToString } = require('./dateToString.js');
 
-// Function to get initial content for the log file
+const logsFolder = path.join(__dirname, '../logs');
+const logFile = path.join(logsFolder, 'console.log');
+
 function initLog() {
 	const header = '=== KenjiB0t Console Log ===';
 	const separator = '============================';
 	const timestamp = dateToString(Date.now());
-
 	return `${header}\n${separator}\n[${timestamp}] Log file created.\n${separator}\n`;
 }
 
-// Function to write input data to a .log file
-function writeLog(exception, err) {
-	const logFile = 'logs/console.log'; // Specify the path to your .log file
-	const logData = `${exception} ${err ? err : ''}`;
+function writeLog(message, err) {
+	try {
+		if (!fs.existsSync(logsFolder)) fs.mkdirSync(logsFolder, { recursive: true });
+		if (!fs.existsSync(logFile)) fs.writeFileSync(logFile, initLog());
 
-	if (!fs.existsSync(logFile)) {
-		// Create the file if it doesn't exist
-		if (!fs.existsSync(logsFolder)) {
-			fs.mkdirSync(logsFolder);
-			console.log(`Created "${logsFolder}" directory.`);
-		}
-		else {
-			console.log(`"${logsFolder}" directory already exists.`);
-		}
+		const timestamp = dateToString(Date.now());
+		const errorText = err ? (err.stack || err.message || err) : '';
+		const logData = `[${timestamp}] ${message}${errorText ? `\n${errorText}` : ''}\n`;
 
-		fs.writeFileSync(logFile, initLog()); // You can add initial content here if needed
-		console.log(`Created ${logFile}`);
+		fs.appendFileSync(logFile, logData);
+		return logData.trim();
+	} catch (fsErr) {
+		console.error(`[writeLog] Failed to write log: ${fsErr.stack || fsErr}`);
+		return `[writeLog] Failed to write log: ${fsErr.stack || fsErr}`;
 	}
-
-	// Append the input data to the log file
-	const timestamp = dateToString(Date.now());
-	fs.appendFileSync(logFile, `[${timestamp}] ${logData}\n`);
-	return logData;
 }
+
 module.exports = { writeLog };

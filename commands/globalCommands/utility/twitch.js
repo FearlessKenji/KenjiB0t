@@ -11,72 +11,166 @@ module.exports = {
 				.setDescription('Add a Twitch user.')
 				.addStringOption(option =>
 					option.setName('name')
-						.setDescription('Name of the user to be added.')
-						.setRequired(true),
+						.setDescription('Twitch username.')
+						.setRequired(true)
 				)
 				.addStringOption(option =>
 					option.setName('discord')
-						.setDescription('Channel\'s Discord invite URL.'),
-				),
+						.setDescription('Discord invite URL for the channel.')
+				)
+				.addBooleanOption(option =>
+					option.setName('self')
+						.setDescription('Set true if this is your own stream.')
+				)
 		)
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('delete')
-				.setDescription('Delete a user.')
+				.setDescription('Delete a Twitch user from the database.')
 				.addStringOption(option =>
 					option.setName('name')
-						.setDescription('Name of the user to be deleted.')
-						.setRequired(true),
-				),
+						.setDescription('Twitch username to delete.')
+						.setRequired(true)
+				)
 		)
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('list')
-				.setDescription('List all channels for your server.'),
+				.setDescription('List all Twitch channels for this server.')
+		)
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('setup')
+				.setDescription('Configure Twitch notification settings.')
+				.addChannelOption(option =>
+					option.setName('self-channel')
+						.setDescription('Discord channel for notifications when a specific channel goes live. Typically your own.')
+						.setRequired(true),
+				)
+				.addChannelOption(option =>
+					option.setName('affiliate-channel')
+						.setDescription('Discord channel for notifications when people you like go live.')
+						.setRequired(true),
+				)
+				.addRoleOption(option =>
+					option.setName('self-role')
+						.setDescription('Notification role for when a specific channel goes live. Typically your own.')
+						.setRequired(true),
+				)
+				.addRoleOption(option =>
+					option.setName('affiliate-role')
+						.setDescription('Notification role for when people you like go live.'),
+				),
 		),
+
 	async execute(interaction) {
+		const affiliateChannelId = interaction.options.getChannel('affiliate-channel')?.id || null;
+		const affiliateRoleId = interaction.options.getRole('affiliate-role')?.id || null;
+		const selfChannelId = interaction.options.getChannel('self-channel')?.id || null;
+		const selfRoleId = interaction.options.getRole('self-role')?.id || null;
 		const subcommand = interaction.options.getSubcommand();
+		const guildId = interaction.guild.id;
+
+		if (subcommand === 'setup') {
+			try {
+				await Servers.upsert({
+					guildId,
+					selfChannelId,
+					affiliateChannelId,
+					selfRoleId,
+					affiliateRoleId
+				});
+				await interaction.reply({ content: 'Server settings updated successfully.', flags: MessageFlags.Ephemeral });
+			}
+			catch (error) {
+				console.error('Failed to update server settings:', error);
+				await interaction.reply({ content: 'Failed to update server settings.', flags: MessageFlags.Ephemeral });
+			}
+		}
 		if (subcommand === 'add') {
 			const channelName = interaction.options.getString('name');
-			const discordURL = interaction.options.getString('discord') || '\u200B';
+			const discordUrl = interaction.options.getString('discord') || null;
+			const isSelf = interaction.options.getBoolean('self') ?? false;
+
 			try {
-				await Channels.upsert({ ChannelName: channelName, DiscordServer: discordURL, guildId: interaction.guild.id });
-				await Servers.upsert({ guildId: interaction.guild.id });
-				await interaction.reply({ content: 'Channel added successfully.', flags: MessageFlags.Ephemeral });
-			}
-			catch (error) {
-				console.error('Failed to add channel:', error);
-				await interaction.reply({ content: 'Failed to add channel.', flags: MessageFlags.Ephemeral });
-			}
-		}
-		else if (subcommand === 'delete') {
-			const channelName = interaction.options.getString('name');
-			try {
-				await Channels.destroy({ where: { ChannelName: channelName, guildId: interaction.guild.id } });
-				await interaction.reply({ content: 'Channel deleted successfully.', flags: MessageFlags.Ephemeral });
-			}
-			catch (error) {
-				console.error('Failed to delete channel:', error);
-				await interaction.reply({ content: 'Failed to delete channel.', flags: MessageFlags.Ephemeral });
-			}
-		}
-		else if (subcommand === 'list') {
-			const list = [];
-			try {
-				const channels = await Channels.findAll({
-					where: { guildId: interaction.guild.id },
-					raw: true,
+				await Servers.upsert({ guildId });
+				await Channels.upsert({
+					channelName,
+					discordUrl,
+					isSelf,
+					guildId,
 				});
-				for (const chan of channels) {
-					list.push(chan.ChannelName);
-				}
-				await interaction.reply({ content: `Channel List:\n${list.join('\n')}`, flags: MessageFlags.Ephemeral });
-			}
-			catch (error) {
-				console.error(error);
-				await interaction.reply({ content: 'An error occurred while fetching the channel list.', flags: MessageFlags.Ephemeral });
+
+				await interaction.reply({
+					content: `Added **${channelName}** successfully.`,
+					flags: MessageFlags.Ephemeral,
+				});
+			} catch (error) {
+				console.error('Failed to add channel:', error);
+				await interaction.reply({
+					content: 'Failed to add channel.',
+					flags: MessageFlags.Ephemeral,
+				});
 			}
 		}
 
+		else if (subcommand === 'delete') {
+			const channelName = interaction.options.getString('name');
+
+			try {
+				const deleted = await Channels.destroy({
+					where: { channelName, guildId },
+				});
+
+				if (!deleted) {
+					return interaction.reply({
+						content: 'Channel not found.',
+						flags: MessageFlags.Ephemeral,
+					});
+				}
+
+				await interaction.reply({
+					content: `Deleted **${channelName}** successfully.`,
+					flags: MessageFlags.Ephemeral,
+				});
+			} catch (error) {
+				console.error('Failed to delete channel:', error);
+				await interaction.reply({
+					content: 'Failed to delete channel.',
+					flags: MessageFlags.Ephemeral,
+				});
+			}
+		}
+
+		else if (subcommand === 'list') {
+			try {
+				const channels = await Channels.findAll({
+					where: { guildId },
+					raw: true,
+				});
+
+				if (!channels.length) {
+					return interaction.reply({
+						content: 'No Twitch channels configured.',
+						flags: MessageFlags.Ephemeral,
+					});
+				}
+
+				const list = channels.map(chan =>
+					`• **${chan.channelName}** ${chan.isSelf ? '(self)' : '(affiliate)'}`
+				);
+
+				await interaction.reply({
+					content: `**Twitch Channels:**\n${list.join('\n')}`,
+					flags: MessageFlags.Ephemeral,
+				});
+			} catch (error) {
+				console.error(error);
+				await interaction.reply({
+					content: 'An error occurred while fetching the channel list.',
+					flags: MessageFlags.Ephemeral,
+				});
+			}
+		}
 	},
 };

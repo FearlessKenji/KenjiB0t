@@ -1,47 +1,40 @@
 /*
- * equivalent to: CREATE TABLE channels(
- * guildId VARCHAR(255) PRIMARYKEY,
- * channelId VARCHAR(255) UNIQUE,
- * mainRoleId VARCHAR(255) UNIQUE,
- * otherRoleId VARCHAR(255) UNIQUE,
+ * equivalent to: CREATE TABLE servers (
+ * guildId VARCHAR(255) PRIMARY KEY,
+ * selfChannelId VARCHAR(255) UNIQUE,
+ * affiliateChannelId VARCHAR(255) UNIQUE,
+ * selfRoleId VARCHAR(255) UNIQUE,
+ * affiliateRoleId VARCHAR(255) UNIQUE
  * );
  */
 module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('servers', {
 		guildId: {
 			type: DataTypes.STRING,
-			primaryKey: true,
-			get() {
-				const rawValue = this.getDataValue('guildId');
-				return rawValue ? rawValue : null;
-			},
+			primaryKey: true
 		},
-		channelId: {
+		selfChannelId: {
 			type: DataTypes.STRING,
 			unique: true,
-			get() {
-				const rawValue = this.getDataValue('channelId');
-				return rawValue ? rawValue : null;
-			},
+			allowNull: true
 		},
-		mainRoleId: {
+		affiliateChannelId: {
 			type: DataTypes.STRING,
 			unique: true,
-			get() {
-				const rawValue = this.getDataValue('mainRoleId');
-				return rawValue ? rawValue : null;
-			},
+			allowNull: true
 		},
-		otherRoleId: {
+		selfRoleId: {
 			type: DataTypes.STRING,
 			unique: true,
-			get() {
-				const rawValue = this.getDataValue('otherRoleId');
-				return rawValue ? rawValue : null;
-			},
+			allowNull: true
+		},
+		affiliateRoleId: {
+			type: DataTypes.STRING,
+			unique: true,
+			allowNull: true
 		},
 	},
-	{
-		timestamps: false,
-	});
+		{
+			timestamps: false,
+		});
 };

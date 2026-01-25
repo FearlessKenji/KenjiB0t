@@ -1,11 +1,25 @@
 /*
- * equivalent to: CREATE TABLE subs(
- * id INTEGER PRIMARYKEY AUTOINCREMENT,
- * name VARCHAR(255) NOT NULL,
- * postId VARCHAR(255) UNIQUE,
- * messageId VARCHAR(255) UNIQUE,
- * serverId VARCHAR(255) NOT NULL
+ * Equivalent to:
+ *
+ * CREATE TABLE subs (
+ *   id INTEGER PRIMARY KEY AUTOINCREMENT,
+ *
+ *   subName    VARCHAR(255) NOT NULL,
+ *   postId     VARCHAR(255),
+ *   messageId  VARCHAR(255) UNIQUE,
+ *   channelId  VARCHAR(255) NOT NULL UNIQUE,
+ *   guildId    VARCHAR(255) NOT NULL,
+ *
+ *   -- Constraints
+ *   UNIQUE (subName, guildId)
  * );
+ *
+ * Notes:
+ * - Each row represents a subreddit subscription within a guild
+ * - subName must be unique per guild
+ * - channelId and messageId are globally unique
+ * - postId may be NULL and is not unique
+ * - No timestamps are stored
  */
 module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('subs', {
@@ -14,37 +28,33 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		SubName: {
+		subName: {
 			type: DataTypes.STRING,
 			allowNull: false,
-            unique: true
 		},
 		postId: {
 			type: DataTypes.STRING,
 			allowNull: true,
-            unique: 'subIndex', // Ensure unique within the same guildId
 		},
-		discord_message_id: {
+		messageId: {
 			type: DataTypes.STRING,
 			allowNull: true,
-			unique: true, // Ensure globally unique
+			unique: true, // globally unique
 		},
 		channelId: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: 'subIndex', // Ensure unique within the same guildId
 		},
 		guildId: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: 'subIndex', // Ensure unique within the same guildId
 		},
 	}, {
 		timestamps: false,
 		indexes: [
 			{
 				unique: true,
-				fields: ['postId', 'guildId'], // Composite unique index
+				fields: ['subName', 'guildId'],
 				name: 'subIndex',
 			},
 		],

@@ -2,9 +2,12 @@
 	"token": "(REQUIRED)",
 	"twitchClientId": "(REQUIRED)",
 	"twitchSecret": "(REQUIRED)",
-	"authToken": "",
 	"botOwner": "(REQUIRED)",
 	"clientId": "(REQUIRED)",
 	"guildId": "(REQUIRED)",
-	"cron": "*/10 * * * * *"
+	"redditCron": "*/1 * * * *",
+	"twitchCron": "*/1 * * * *",
+	"statusCron": "*/10 * * * *",
+	"authCron": "0 * * * *",
+	"authToken": ""
 }

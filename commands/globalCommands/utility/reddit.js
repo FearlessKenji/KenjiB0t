@@ -37,12 +37,14 @@ module.exports = {
 		),
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
+		const guildId = interaction.guild.id
+
 		if (subcommand === 'add') {
 			const subName = interaction.options.getString('name');
-			const chanName = interaction.options.getChannel('channel');
+			const channelId = interaction.options.getChannel('channel').id;
 			try {
-				await Subs.upsert({ SubName: subName, channelId: chanName.id, guildId: interaction.guild.id });
-				await Servers.upsert({ guildId: interaction.guild.id });
+				await Servers.upsert({ guildId });
+				await Subs.upsert({ subName, channelId, guildId });
 				await interaction.reply({ content: 'Subreddit added successfully.', flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
@@ -53,7 +55,7 @@ module.exports = {
 		else if (subcommand === 'delete') {
 			const subName = interaction.options.getString('name');
 			try {
-				await Subs.destroy({ where: { SubName: subName, guildId: interaction.guild.id } });
+				await Subs.destroy({ where: { subName, guildId } });
 				await interaction.reply({ content: 'Subreddit deleted successfully.', flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
@@ -62,15 +64,13 @@ module.exports = {
 			}
 		}
 		else if (subcommand === 'list') {
-			const list = [];
 			try {
 				const subs = await Subs.findAll({
-					where: { guildId: interaction.guild.id },
+					where: { guildId },
 					raw: true,
 				});
-				for (const sub of subs) {
-					list.push(sub.SubName);
-				}
+				const list = subs.map(sub => sub.subName);
+
 				await interaction.reply({ content: `Sub List:\n${list.join('\n')}`, flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
