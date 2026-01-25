@@ -19,7 +19,7 @@ const Subs = require('./models/subs.js')(sequelize, Sequelize.DataTypes);
 // Associations
 Channels.belongsTo(Servers, { foreignKey: 'guildId', targetKey: 'guildId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Subs.belongsTo(Servers, { foreignKey: 'guildId', targetKey: 'guildId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Servers.hasMany(Channels, { foreignKey: 'guildId', sourceKey: 'guildId' });
-Servers.hasMany(Subs, { foreignKey: 'guildId', sourceKey: 'guildId' });
+Servers.hasMany(Channels, { foreignKey: 'guildId', sourceKey: 'guildId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Servers.hasMany(Subs, { foreignKey: 'guildId', sourceKey: 'guildId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = { sequelize, Servers, Channels, Subs };
