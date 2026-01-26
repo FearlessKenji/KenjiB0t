@@ -23,7 +23,7 @@ for (const scope of fs.readdirSync(commandsPath)) {
       if (command.data && command.execute) {
         client.commands.set(command.data.name, command);
       } else {
-        console.warn(`[WARNING] ${file} missing data or execute`);
+        console.warn(writeLog(`[WARNING] ${file} missing data or execute`));
       }
     }
   }
@@ -57,11 +57,22 @@ client.login(config.token);
 // =======================
 // Shutdown logic
 // =======================
-process.on('SIGINT', () => {
-  console.log('Stopping bot...')
-  for (const [name, job] of Object.entries(client.cronJobs)) {
-    console.log(`${name} cron stopped.`)
-    job.stop();
+function shutdown(signal) {
+  console.log(writeLog(`Stopping bot...`));
+
+  if (client.cronJobs) {
+    for (const [name, job] of Object.entries(client.cronJobs)) {
+      if (job.running) {
+        job.stop();
+        console.log(writeLog(`${name} cron stopped.`));
+      }
+    }
   }
+
+  client.destroy();
   process.exit(0);
-});
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+process.on('SIGUSR2', shutdown); // PM2 restart

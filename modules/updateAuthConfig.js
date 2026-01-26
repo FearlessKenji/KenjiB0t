@@ -10,7 +10,7 @@ async function updateAuthConfig() {
 	if (!authKey) return;
 
 	// write the new auth key
-	console.log(writeLog(`Updating authToken and writing to config.`));
+	//console.log(writeLog(`Updating authToken and writing to config.`));
 	const tempConfig = JSON.parse(fs.readFileSync('./config.json'));
 	tempConfig.authToken = authKey;
 	fs.writeFileSync('./config.json', JSON.stringify(tempConfig, null, 2));

@@ -1,4 +1,3 @@
-const { Servers, Channels, Subs } = require('../database/dbObjects.js');
 const { Events, ActivityType } = require('discord.js');
 const { writeLog } = require('../modules/writeLog.js');
 const { dbInit } = require('../modules/dbInit.js')

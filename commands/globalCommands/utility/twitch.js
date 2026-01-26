@@ -80,10 +80,18 @@ module.exports = {
 					selfRoleId,
 					affiliateRoleId
 				});
-				await interaction.reply({ content: 'Server settings updated successfully.', flags: MessageFlags.Ephemeral });
+				await interaction.reply({ 
+					content: `Server settings updated successfully.
+					## **When you go live:**
+					-Role:		<@${selfRoleId}>
+					-Channel:	<#${selfChannelId}>
+					## When someone you know goes live:
+					-Role:		<@${affiliateRoleId}>
+					-Channel:	<#${affiliateChannelId}>`,
+					flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
-				console.error('Failed to update server settings:', error);
+				console.error(writeLog('Failed to update server settings:', error));
 				await interaction.reply({ content: 'Failed to update server settings.', flags: MessageFlags.Ephemeral });
 			}
 		}
@@ -106,9 +114,9 @@ module.exports = {
 					flags: MessageFlags.Ephemeral,
 				});
 			} catch (error) {
-				console.error('Failed to add channel:', error);
+				console.error(writeLog(`Failed to add channel **${channelName}**:`, error));
 				await interaction.reply({
-					content: 'Failed to add channel.',
+					content: `Failed to add **${channelName}**.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
@@ -124,7 +132,7 @@ module.exports = {
 
 				if (!deleted) {
 					return interaction.reply({
-						content: 'Channel not found.',
+						content: `Channel **${channelName}** not found in database.`,
 						flags: MessageFlags.Ephemeral,
 					});
 				}
@@ -134,9 +142,9 @@ module.exports = {
 					flags: MessageFlags.Ephemeral,
 				});
 			} catch (error) {
-				console.error('Failed to delete channel:', error);
+				console.error(writeLog(`Failed to delete **${channelName}**:`, error));
 				await interaction.reply({
-					content: 'Failed to delete channel.',
+					content: `Failed to delete **${channelName}**.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}

@@ -45,22 +45,30 @@ module.exports = {
 			try {
 				await Servers.upsert({ guildId });
 				await Subs.upsert({ subName, channelId, guildId });
-				await interaction.reply({ content: 'Subreddit added successfully.', flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Subreddit **${subName}** added successfully to <#${channelId}>.`, flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
 				console.error('Failed to add subreddit:', error);
-				await interaction.reply({ content: 'Failed to add subreddit.', flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Failed to add **${subName}** to <#${channelId}>.`, flags: MessageFlags.Ephemeral });
 			}
 		}
 		else if (subcommand === 'delete') {
 			const subName = interaction.options.getString('name');
 			try {
-				await Subs.destroy({ where: { subName, guildId } });
-				await interaction.reply({ content: 'Subreddit deleted successfully.', flags: MessageFlags.Ephemeral });
+				const deleted = await Subs.destroy(
+					{ where: { subName, guildId } });
+
+				if (!deleted) {
+					return interaction.reply({
+						content: `Channel **${subName}** not found in database.`,
+						flags: MessageFlags.Ephemeral,
+					});
+				}
+				await interaction.reply({ content: `Subreddit **${subName}** deleted successfully.`, flags: MessageFlags.Ephemeral });
 			}
 			catch (error) {
 				console.error('Failed to delete subreddit:', error);
-				await interaction.reply({ content: 'Failed to delete subreddit.', flags: MessageFlags.Ephemeral });
+				await interaction.reply({ content: `Failed to delete **${subName}**.`, flags: MessageFlags.Ephemeral });
 			}
 		}
 		else if (subcommand === 'list') {
@@ -70,6 +78,13 @@ module.exports = {
 					raw: true,
 				});
 				const list = subs.map(sub => sub.subName);
+
+				if (!subs.length) {
+					return interaction.reply({
+						content: 'No subreddits configured.',
+						flags: MessageFlags.Ephemeral,
+					});
+				}
 
 				await interaction.reply({ content: `Sub List:\n${list.join('\n')}`, flags: MessageFlags.Ephemeral });
 			}
