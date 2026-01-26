@@ -111,8 +111,7 @@ async function checkReddit(client, throttle = 1000) {
       // ----------------------------
       // NSFW handling: skip image if post is over_18 and sub requires SFW
       // ----------------------------
-      const nsfwSafe = sub.nsfwSafe ?? false; // optional per-sub flag in your DB
-      if (!post.over_18 || !nsfwSafe) {
+      if (!post.over_18) {
         if (imgUrl && imgUrl.startsWith('http')) {
           redditEmbed.setImage(imgUrl);
         }
