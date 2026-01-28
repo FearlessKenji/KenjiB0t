@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { Servers, Channels } = require('../../../database/dbObjects.js');
+const { writeLog } = require('../../../modules/writeLog.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,16 +13,16 @@ module.exports = {
 				.addStringOption(option =>
 					option.setName('name')
 						.setDescription('Twitch username.')
-						.setRequired(true)
+						.setRequired(true),
 				)
 				.addStringOption(option =>
 					option.setName('discord')
-						.setDescription('Discord invite URL for the channel.')
+						.setDescription('Discord invite URL for the channel.'),
 				)
 				.addBooleanOption(option =>
 					option.setName('self')
-						.setDescription('Set true if this is your own stream.')
-				)
+						.setDescription('Set true if this is your own stream.'),
+				),
 		)
 		.addSubcommand(subcommand =>
 			subcommand
@@ -30,13 +31,13 @@ module.exports = {
 				.addStringOption(option =>
 					option.setName('name')
 						.setDescription('Twitch username to delete.')
-						.setRequired(true)
-				)
+						.setRequired(true),
+				),
 		)
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('list')
-				.setDescription('List all Twitch channels for this server.')
+				.setDescription('List all Twitch channels for this server.'),
 		)
 		.addSubcommand(subcommand =>
 			subcommand
@@ -78,9 +79,9 @@ module.exports = {
 					selfChannelId,
 					affiliateChannelId,
 					selfRoleId,
-					affiliateRoleId
+					affiliateRoleId,
 				});
-				await interaction.reply({ 
+				await interaction.reply({
 					content: `Server settings updated successfully.
 					## **When you go live:**
 					-Role:		<@${selfRoleId}>
@@ -88,7 +89,8 @@ module.exports = {
 					## When someone you know goes live:
 					-Role:		<@${affiliateRoleId}>
 					-Channel:	<#${affiliateChannelId}>`,
-					flags: MessageFlags.Ephemeral });
+					flags: MessageFlags.Ephemeral,
+				});
 			}
 			catch (error) {
 				console.error(writeLog('Failed to update server settings:', error));
@@ -113,7 +115,8 @@ module.exports = {
 					content: `Added **${channelName}** successfully.`,
 					flags: MessageFlags.Ephemeral,
 				});
-			} catch (error) {
+			}
+			catch (error) {
 				console.error(writeLog(`Failed to add channel **${channelName}**:`, error));
 				await interaction.reply({
 					content: `Failed to add **${channelName}**.`,
@@ -141,7 +144,8 @@ module.exports = {
 					content: `Deleted **${channelName}** successfully.`,
 					flags: MessageFlags.Ephemeral,
 				});
-			} catch (error) {
+			}
+			catch (error) {
 				console.error(writeLog(`Failed to delete **${channelName}**:`, error));
 				await interaction.reply({
 					content: `Failed to delete **${channelName}**.`,
@@ -165,15 +169,16 @@ module.exports = {
 				}
 
 				const list = channels.map(chan =>
-					`• **${chan.channelName}** ${chan.isSelf ? '(self)' : '(affiliate)'}`
+					`• **${chan.channelName}** ${chan.isSelf ? '(self)' : '(affiliate)'}`,
 				);
 
 				await interaction.reply({
 					content: `**Twitch Channels:**\n${list.join('\n')}`,
 					flags: MessageFlags.Ephemeral,
 				});
-			} catch (error) {
-				console.error(error);
+			}
+			catch (error) {
+				console.error(writeLog('An error occurred while fetching the channel list:', error));
 				await interaction.reply({
 					content: 'An error occurred while fetching the channel list.',
 					flags: MessageFlags.Ephemeral,

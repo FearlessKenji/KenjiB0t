@@ -7,7 +7,7 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^9.39.2"
   },
   "name": "kenjib0t",
   "description": "This Discord bot will automatically send a message and tag the assigned role whenever a streamer went live.\r The notifications will update every 10 minutes(default) while the streamer is live.",
@@ -25,6 +25,7 @@
     "discord",
     "bot",
     "twitch",
+    "reddit",
     "notification",
     "notify"
   ],
@@ -33,5 +34,9 @@
   "bugs": {
     "url": "https://github.com/FearlessKenji/KenjiB0t/issues"
   },
-  "homepage": "https://github.com/FearlessKenji/KenjiB0t#readme"
+  "homepage": "https://github.com/FearlessKenji/KenjiB0t#readme",
+  "engines": {
+    "node": ">=16.9.0"
+  },
+  "type": "commonjs"
 }

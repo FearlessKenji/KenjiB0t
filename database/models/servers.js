@@ -11,30 +11,30 @@ module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('servers', {
 		guildId: {
 			type: DataTypes.STRING,
-			primaryKey: true
+			primaryKey: true,
 		},
 		selfChannelId: {
 			type: DataTypes.STRING,
 			unique: true,
-			allowNull: true
+			allowNull: true,
 		},
 		affiliateChannelId: {
 			type: DataTypes.STRING,
 			unique: true,
-			allowNull: true
+			allowNull: true,
 		},
 		selfRoleId: {
 			type: DataTypes.STRING,
 			unique: true,
-			allowNull: true
+			allowNull: true,
 		},
 		affiliateRoleId: {
 			type: DataTypes.STRING,
 			unique: true,
-			allowNull: true
+			allowNull: true,
 		},
 	},
-		{
-			timestamps: false,
-		});
+	{
+		timestamps: false,
+	});
 };

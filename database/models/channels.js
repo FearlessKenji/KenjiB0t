@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 		isSelf: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			default: false
+			default: false,
 		},
 		streamId: {
 			type: DataTypes.STRING,

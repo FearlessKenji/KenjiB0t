@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, ChannelType } = require('discord.js');
-const { Servers, Subs } = require('../../../database/dbObjects.js');
+const { Servers, Subs } = require ('../../../database/dbObjects.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -37,7 +37,7 @@ module.exports = {
 		),
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
-		const guildId = interaction.guild.id
+		const guildId = interaction.guild.id;
 
 		if (subcommand === 'add') {
 			const subName = interaction.options.getString('name');

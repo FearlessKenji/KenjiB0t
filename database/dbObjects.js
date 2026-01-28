@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const fs = require('node:fs');
 const path = require('path');
 
 const dbPath = path.join(__dirname, 'database.sqlite');

@@ -23,7 +23,8 @@ function writeLog(message, err) {
 
 		fs.appendFileSync(logFile, logData);
 		return logData.trim();
-	} catch (fsErr) {
+	}
+	catch (fsErr) {
 		console.error(`[writeLog] Failed to write log: ${fsErr.stack || fsErr}`);
 		return `[writeLog] Failed to write log: ${fsErr.stack || fsErr}`;
 	}

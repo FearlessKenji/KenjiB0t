@@ -1,4 +1,4 @@
-const { writeLog } = require("./writeLog");
+const { writeLog } = require('./writeLog');
 async function getData(channelName, clientID, authKey) {
 	try {
 		const res = await fetch(
@@ -8,7 +8,7 @@ async function getData(channelName, clientID, authKey) {
 					'Client-ID': clientID,
 					'Authorization': `Bearer ${authKey}`,
 				},
-			}
+			},
 		);
 
 		if (!res.ok) {
@@ -21,11 +21,12 @@ async function getData(channelName, clientID, authKey) {
 
 		// Look for exact match (case-insensitive)
 		const channel = channels.find(
-			c => c.broadcaster_login.toLowerCase() === channelName.toLowerCase()
+			c => c.broadcaster_login.toLowerCase() === channelName.toLowerCase(),
 		);
 
 		return channel || false;
-	} catch (err) {
+	}
+	catch (err) {
 		console.error(writeLog('Error fetching Twitch channel data:', err));
 		return false;
 	}
