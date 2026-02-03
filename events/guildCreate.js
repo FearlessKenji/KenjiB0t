@@ -1,6 +1,6 @@
-const { Events } = require('discord.js');
 const { Servers } = require('../database/dbObjects.js');
 const { writeLog } = require('../modules/writeLog.js');
+const { Events } = require('discord.js');
 
 module.exports = {
 	name: Events.GuildCreate,

@@ -1,4 +1,5 @@
 const { writeLog } = require('./writeLog');
+
 async function getKey(clientID, clientSecret) {
 	try {
 		const res = await fetch(

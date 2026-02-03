@@ -1,4 +1,5 @@
 const { writeLog } = require('./writeLog');
+
 async function getData(channelName, clientID, authKey) {
 	try {
 		const res = await fetch(

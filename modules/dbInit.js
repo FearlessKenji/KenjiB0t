@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
 const { sequelize } = require('../database/dbObjects');
 const { writeLog } = require('../modules/writeLog');
+const path = require('node:path');
+const fs = require('node:fs');
 
 async function dbInit() {
 	const dbPath = path.resolve('database/database.sqlite');

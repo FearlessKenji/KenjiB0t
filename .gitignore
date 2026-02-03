@@ -1,17 +1,16 @@
 # Logs
-logs
+logs/
 *.log
 
-# Dependency directories
+# Dependencies
 node_modules/
 
-# startup config files
+# PM2 / runtime config (machine-specific)
 ecosystem.config.js
 ecosystem.config.cjs
+
+# Local runtime config
 config.json
 
-# database files
+# Local databases
 *.sqlite
-
-# dependency versions
-package-lock.json

@@ -1,5 +1,5 @@
-const { writeLog } = require('../../../modules/writeLog.js');
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { writeLog } = require('../../../modules/writeLog.js');
 const config = require('../../../config.json');
 
 module.exports = {

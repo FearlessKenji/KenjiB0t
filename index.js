@@ -1,7 +1,7 @@
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { writeLog } = require('./modules/writeLog.js');
 const createCronJobs = require('./modules/crons.js');
-const config = require('./config.json');
+const config = require('./modules/config.js');
 const path = require('node:path');
 const fs = require('node:fs');
 

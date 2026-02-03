@@ -1,6 +1,6 @@
-const fs = require('node:fs');
-const path = require('node:path');
 const { dateToString } = require('./dateToString.js');
+const path = require('node:path');
+const fs = require('node:fs');
 
 const logsFolder = path.join(__dirname, '../logs');
 const logFile = path.join(logsFolder, 'console.log');
