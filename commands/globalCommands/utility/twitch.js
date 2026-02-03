@@ -61,9 +61,9 @@ module.exports = {
 				.addRoleOption(option =>
 					option.setName('affiliate-role')
 						.setDescription('Notification role for when people you like go live.'),
-				)
-				.setDefaultMemberPermissions(0), // Restrict to admins or bot owner,
-		),
+				),
+		)
+		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner,
 
 	async execute(interaction) {
 		const affiliateChannelId = interaction.options.getChannel('affiliate-channel')?.id || null;
@@ -83,13 +83,13 @@ module.exports = {
 					affiliateRoleId,
 				});
 				await interaction.reply({
-					content: `Server settings updated successfully.
-					## **When you go live:**
-					-Role:		<@${selfRoleId}>
-					-Channel:	<#${selfChannelId}>
-					## When someone you know goes live:
-					-Role:		<@${affiliateRoleId}>
-					-Channel:	<#${affiliateChannelId}>`,
+					content: `Server settings updated accordingly:
+### **When you go live:**
+-Role: <@&${selfRoleId}>
+-Channel: <#${selfChannelId}>
+### When someone you know goes live:
+-Role: <@&${affiliateRoleId}>
+-Channel: <#${affiliateChannelId}>`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
