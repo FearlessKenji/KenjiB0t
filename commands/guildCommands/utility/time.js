@@ -8,7 +8,9 @@ function epochTime() {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('time')
-		.setDescription('Replies with the current time and date.'),
+		.setDescription('Replies with the current time and date.')
+		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner
+
 	async execute(interaction) {
 		const discordTime = `<t:${epochTime()}:t>`;
 		const discordDate = `<t:${epochTime()}:d>`;

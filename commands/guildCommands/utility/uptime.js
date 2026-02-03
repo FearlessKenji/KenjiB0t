@@ -19,7 +19,9 @@ function calculateUptime() {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('uptime')
-		.setDescription('Replies with the runtime.'),
+		.setDescription('Replies with the runtime.')
+		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner
+
 	async execute(interaction) {
 		await interaction.reply({ content: calculateUptime(), fetchReply: true });
 	},

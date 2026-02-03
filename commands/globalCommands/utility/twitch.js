@@ -61,7 +61,8 @@ module.exports = {
 				.addRoleOption(option =>
 					option.setName('affiliate-role')
 						.setDescription('Notification role for when people you like go live.'),
-				),
+				)
+				.setDefaultMemberPermissions(0), // Restrict to admins or bot owner,
 		),
 
 	async execute(interaction) {

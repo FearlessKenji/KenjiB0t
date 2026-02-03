@@ -5,7 +5,9 @@ const config = require('../../../config.json');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('restart')
-		.setDescription('Restart the bot'),
+		.setDescription('Restart the bot')
+		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner
+
 	async execute(interaction) {
 		if (interaction.user.id === config.botOwner) {
 			await interaction.reply({ content: 'Restarting...', flags: MessageFlags.Ephemeral });

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, EmbedBuilder, InteractionContextType } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,7 +9,9 @@ module.exports = {
 				.setName('channel')
 				.setDescription('Select your rules channel')
 				.setRequired(true),
-		),
+		)
+		.setDefaultMemberPermissions(0) // Restrict to admins or bot owner,
+		.setContexts(InteractionContextType.Guild), // Guild only
 
 	async execute(interaction) {
 		const channel = interaction.options.getChannel('channel');

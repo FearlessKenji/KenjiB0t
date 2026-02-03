@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, ChannelType } = require('discord.js');
-const { Servers, Subs } = require ('../../../database/dbObjects.js');
+const { Servers, Subs } = require('../../../database/dbObjects.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -34,7 +34,9 @@ module.exports = {
 			subcommand
 				.setName('list')
 				.setDescription('List all subs for your server.'),
-		),
+		)
+		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner
+
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
 		const guildId = interaction.guild.id;
