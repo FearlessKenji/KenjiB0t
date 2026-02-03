@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, InteractionContextType } = require('discord.js');
 const { Servers, Channels } = require('../../../database/dbObjects.js');
 const { writeLog } = require('../../../modules/writeLog.js');
 
@@ -63,7 +63,8 @@ module.exports = {
 						.setDescription('Notification role for when people you like go live.'),
 				),
 		)
-		.setDefaultMemberPermissions(0), // Restrict to admins or bot owner,
+		.setDefaultMemberPermissions(0) // Restrict to admins or bot owner,
+		.setContexts(InteractionContextType.Guild),
 
 	async execute(interaction) {
 		const affiliateChannelId = interaction.options.getChannel('affiliate-channel')?.id || null;
