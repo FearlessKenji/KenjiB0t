@@ -22,10 +22,7 @@ function fatal(message) {
 /* ---------- file existence ---------- */
 
 if (!fs.existsSync(configPath)) {
-	fatal(
-		'\nMissing config.json\n' +
-		'Copy blank_config.json to config.json and fill in REQUIRED fields.',
-	);
+	fatal('\nMissing config.json\nCopy blank_config.json to config.json and fill in REQUIRED fields.');
 }
 
 /* ---------- JSON parsing ---------- */
