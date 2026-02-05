@@ -1,6 +1,5 @@
 const { ActivityType } = require('discord.js');
 const auth = require('./updateAuthConfig.js');
-const reddit = require('./getReddit.js');
 const twitch = require('./getTwitch.js');
 const config = require('../config.json');
 const { CronJob } = require('cron');
@@ -9,10 +8,6 @@ module.exports = (client) => {
 	let activityIndex = -1;
 
 	return {
-		Reddit: new CronJob(config.redditCron, async () => {
-			await reddit.checkReddit(client);
-		}),
-
 		Twitch: new CronJob(config.twitchCron, async () => {
 			await twitch.checkTwitch(client);
 		}),
