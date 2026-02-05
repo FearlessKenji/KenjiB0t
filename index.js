@@ -1,11 +1,27 @@
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { writeLog } = require('./modules/writeLog.js');
 const createCronJobs = require('./modules/crons.js');
 const config = require('./modules/config.js');
 const path = require('node:path');
 const fs = require('node:fs');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });
+// =======================
+// Create Discord client
+// =======================
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessageReactions,
+	],
+	partials: [
+		Partials.Message,
+		Partials.Reaction,
+		Partials.User,
+	],
+});
+
 client.cronJobs = createCronJobs(client);
 
 // =======================
@@ -75,6 +91,7 @@ function shutdown() {
 	process.exit(0);
 }
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+// Listen for termination signals
+process.on('SIGINT', shutdown); // Ctrl+C
+process.on('SIGTERM', shutdown); // Termination signal
 process.on('SIGUSR2', shutdown); // PM2 restart
